@@ -1,0 +1,219 @@
+@media screen and (min-width: 1024px){
+    .footer{
+        background-color: rgb(11, 6, 32);
+        width: 100%;
+        margin-top: 50px;
+        margin-bottom: 0;
+        padding-top: 5px;
+        color: white;
+
+    }
+    
+    .topo_footer{
+        text-align: center;
+    }
+    
+    .contato_redes{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .contato, .redes_sociais{
+        margin: 0 20px;
+    }
+    
+    
+    
+    .p_icons{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .p_icons p{
+        margin-left: 10px;
+    }
+    
+    
+    .bottom_footer{
+        margin-top: 100px;
+        padding-bottom: 30px;
+        text-align: center;
+    } 
+}
+
+@media screen and (max-width: 1023px){
+    .footer{
+        background-color: rgb(11, 6, 32);
+        width: 100%;
+        margin-top: 50px;
+        padding-top: 5px;
+        color: white;
+    }
+    
+    .topo_footer{
+        text-align: center;
+        margin: 0 20px 0 20px;
+    }
+    
+    .contato_redes{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .contato, .redes_sociais{
+        margin: 0 20px;
+    }
+    
+    
+    
+    .p_icons{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .p_icons p{
+        margin-left: 10px;
+    }
+    
+    
+    .bottom_footer{
+        margin-top: 100px;
+        padding-bottom: 30px;
+        text-align: center;
+    } 
+}
+
+/*Layouts para Celulares*/
+@media screen and (max-width: 480px) and (min-height: 831px){
+    .footer{
+        background-color: rgb(11, 6, 32);
+        width: 100%;
+        margin-top: 50px;
+        color: white;
+    }
+    
+    .topo_footer{
+        text-align: center;
+        margin: 0 20px 0 20px;
+    }
+    
+    .contato_redes{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .contato, .redes_sociais{
+        margin: 0 20px;
+    }
+    
+    .p_icons{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .p_icons p{
+        margin-left: 10px;
+    }
+    
+    
+    .bottom_footer{
+        margin-top: 100px;
+        padding-bottom: 30px;
+        text-align: center;
+    } 
+}
+
+@media screen and (max-width: 480px) and (max-height: 830px){
+    .footer{
+        background-color: rgb(11, 6, 32);
+        width: 100%;
+        margin-top: 50px;
+        /*padding-top: 30px;*/
+        color: white;
+    }
+    
+    .topo_footer{
+        text-align: center;
+        margin: 0 20px 0 20px;
+    }
+    
+    .contato_redes{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .contato, .redes_sociais{
+        margin: 0 10px;
+    }
+    .contato h3, .redes_sociais h3{
+        font-size: 16px;
+    }
+
+
+    .p_icons{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .p_icons p{
+        margin-left: 10px;
+        font-size: 10px;
+    }
+    
+    
+    .bottom_footer{
+        margin: 100px 10px 0px 10px;
+        text-align: center;
+    } 
+    .bottom_footer p{
+        font-size: 12px;
+    }
+}
+
+
+
+
+/*#localizacao::before{
+    content: "......";
+    width: 20px;
+    height: 20px;
+    background: url("/public//assets/local.png");
+    background-size: 20px 20px;
+    margin: 0 8px 0 0;
+}
+#telefone::before{
+    content: "......";
+    width: 20px;
+    height: 20px;
+    background: url("/public//assets/telefone.png");
+    background-size: 20px 20px;
+    margin: 0 8px 0 0;
+}
+#email::before{
+    content: "......";
+    width: 20px;
+    height: 20px;
+    background: url("/public//assets/email.png");
+    background-size: 20px 20px;
+    margin: 0 8px 0 0;
+}
+#facebook::before{
+    content: "......";
+    width: 20px;
+    height: 20px;
+    background: url("/public//assets/fb.png");
+    background-size: 20px 20px;
+    margin: 0 8px 0 0;
+}
+#instagram::before{
+    content: "......";
+    width: 20px;
+    height: 20px;
+    background: url("/public//assets/ig.png");
+    background-size: 20px 20px;
+    margin: 0 8px 0 0;
+}*/
