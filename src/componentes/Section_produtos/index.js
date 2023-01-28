@@ -13,22 +13,50 @@ export default function Section_Produtos(){
                 <div className="apresentation_vitrine">
                     <h3>Óculos de Grau</h3>
                     <img src="/assets/oculos01.png" alt="Óculos de Grau"/>
-                    <p>R$ 500,00</p> 
+                    <div className="icon_preco">
+                        <img src="/assets/etiqueta-de-preco.png" alt="icon_sale"/>
+                        <p>R$ 599,00</p> 
+                    </div>
+                    <div className="link_comprar">
+                        <a className="add_cart" href="#">Adicionar ao carrinho</a>
+                        <a className="comprar" href="#">Comprar agora</a>
+                    </div>  
                 </div>
                 <div className="apresentation_vitrine">
                     <h3>Óculos Transition</h3>
                     <img src="/assets/oculos02.png" alt="Óculos de Grau"/>
-                    <p>R$ 750,00</p>
+                    <div className="icon_preco">
+                        <img src="/assets/etiqueta-de-preco.png" alt="icon_sale"/>
+                        <p>R$ 789,00</p> 
+                    </div>
+                    <div className="link_comprar">
+                        <a className="add_cart" href="#">Adicionar ao carrinho</a>
+                        <a className="comprar" href="#">Comprar agora</a>
+                    </div>  
                 </div>
                 <div className="apresentation_vitrine">
                     <h3>Óculos de Sol</h3>
                     <img src="/assets/oculos03.png" alt="Óculos de Grau"/>
-                    <p>R$ 700,00</p>
+                    <div className="icon_preco">
+                        <img src="/assets/etiqueta-de-preco.png" alt="icon_sale"/>
+                        <p>R$ 650,00</p> 
+                    </div>
+                    <div className="link_comprar">
+                        <a className="add_cart" href="#">Adicionar ao carrinho</a>
+                        <a className="comprar"href="#">Comprar agora</a>
+                    </div>  
                 </div>
                 <div className="apresentation_vitrine">
                     <h3>Óculos Infantil</h3>
                     <img src="/assets/oculos04.png" alt="Óculos de Grau"/>
-                    <p>R$ 500,00</p>
+                    <div className="icon_preco">
+                        <img src="/assets/etiqueta-de-preco.png" alt="icon_sale"/>
+                        <p>R$ 839,90</p> 
+                    </div>
+                    <div className="link_comprar">
+                        <a className="add_cart" href="#">Adicionar ao carrinho</a>
+                        <a className="comprar" href="#">Comprar agora</a>
+                    </div>    
                 </div>
             </div>
             <div className="bottom-section">
@@ -39,7 +67,7 @@ export default function Section_Produtos(){
                     <li>Descontos especiais na compra da segunda unidade</li>
                     <li>Flexibilidade de pagamento</li>
                 </ul>
-            </div>  
+            </div>   
         </div>
     );
 } 

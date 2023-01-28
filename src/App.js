@@ -10,23 +10,23 @@ function App(){
     return(
         <div className="App">
             <header>
-                <div className="header">
+                <div id="header_id" className="header">
                     <Header/>
                 </div>
             </header>
             <main>
-                <section className="section_capa">
+                <section id="capa_id" className="section_capa">
                     <Section_Capa/>
                 </section>
-                <section className="section_produtos">
+                <section id="produtos_id" className="section_produtos">
                     <Section_Produtos/>
                 </section>
-                <section className="section_sobre">
+                <section id="sobre_id" className="section_sobre">
                     <Section_Sobre/>
                 </section>
             </main>
             <footer>
-                <section className="footer">
+                <section id="footer_id" className="footer">
                     <Footer/>
                 </section>
             </footer>
@@ -34,5 +34,5 @@ function App(){
         
     );
 }
-
+ 
 export default App;
