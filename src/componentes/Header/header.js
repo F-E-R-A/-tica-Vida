@@ -8,7 +8,8 @@ export default function Header(){
     function scrollTo(local){
         let element = document.getElementsByTagName("a");
         for (let i=0; i< element.length; i++){
-            element[i].setAttribute("href", local);
+            //element[i].setAttribute("href", local);
+            document.getElementById(local).scrollIntoView({behavior:'smooth'});
         }
     }
 
@@ -20,9 +21,9 @@ export default function Header(){
                     <a href="#"><img src="/assets/logo.png" alt="Logo"/></a>
                 </div>
                 <div className="Navegation">
-                    <a onClick={() => scrollTo("#produtos_id")}>PRODUTOS</a>
-                    <a onClick={() => scrollTo("#sobre_id")}>SOBRE</a>
-                    <a onClick={() => scrollTo("#footer_id")}>CONTATO</a> 
+                    <a onClick={() => scrollTo("produtos_id")}>PRODUTOS</a>
+                    <a onClick={() => scrollTo("sobre_id")}>SOBRE</a>
+                    <a onClick={() => scrollTo("footer_id")}>CONTATO</a> 
                     <a id="btn-profile" onClick={() => navigate("/profile")}>
                         <img src="/assets/user.png" alt=""/>
                     </a>

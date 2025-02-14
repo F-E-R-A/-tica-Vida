@@ -5,7 +5,7 @@
         width: 100%;
     }
     .black-line{
-        background-color: black;
+        background-color: rgb(1, 0, 39);
     }
     
     .header{
@@ -24,7 +24,7 @@
     
     }
     .Logo img{
-        height: 30px;
+        height: 28px;
         width: 100px;
         margin-left: 50px;
     }
@@ -44,12 +44,18 @@
     .Navegation a:hover{
         background-color: rgb(175, 174, 174);
         color: white;
+        transition: 0.3s;
+        cursor: pointer;
     }
     .Navegation a:last-child{
         margin-right: 50px;
     }
     .Navegation #btn-profile {
         width: 30px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .Navegation #btn-profile img {
         width: 30px;

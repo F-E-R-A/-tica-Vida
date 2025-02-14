@@ -49,19 +49,44 @@
         font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         font-size: 15px;
     }
+    .apresentation_vitrine p {
+        text-decoration: underline;
+        text-decoration-color: orange;
+        text-decoration-thickness: 3px;
+        
+    }
     .apresentation_vitrine img{
         width: 300px;
-        height: 100px;
+        height: 120px;
+    }
+    .apresentation_vitrine .container-more{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .apresentation_vitrine .container-more img {
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+    }
+    .apresentation_vitrine .container-more a {
+        color: rgb(8, 177, 64);
     }
     
     .bottom-section{
         display: flex;
         flex-direction: column;
         align-items: center;
+        background-color: rgb(235, 235, 235);
     }
     .bottom-section ul{
         text-align: center;
         list-style-position: inside;
+        text-decoration: underline;
+        text-decoration-color: rgb(14, 177, 114);
+        text-decoration-thickness: 2px;
     }
 }
 
