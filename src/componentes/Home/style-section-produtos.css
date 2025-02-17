@@ -87,6 +87,41 @@
         text-decoration: underline;
         text-decoration-color: rgb(14, 177, 114);
         text-decoration-thickness: 2px;
+        padding: 0;
+    }
+    .bottom-section b {
+        margin-top: 10px;
+    }
+
+    .popup-atendimento {
+        position: fixed;
+        width: 160px;
+        bottom: 20px;
+        right: -150px;
+        padding: 5px 40px 5px 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        background-color: rgb(187, 243, 187);
+        border-radius: 10px 0 0 10px;
+        text-align: center;
+        box-shadow: 2px 2px 5px black;
+        transition: 0.8s;
+    }
+    .popup-atendimento:hover{
+        right: 0px;
+        cursor: pointer;
+    }
+
+    .popup-atendimento img {
+        width: 45px;
+        margin-right: 10px;
+    }
+    .popup-atendimento p {
+        font-size: 18px;
+        font-weight: 600;
+        color: rgb(2, 58, 16);
     }
 }
 

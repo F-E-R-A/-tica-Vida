@@ -5,7 +5,10 @@
         width: 100%;
     }
     .black-line{
-        background-color: rgb(1, 0, 39);
+        background-color: #808080;
+        height: 30px;
+        box-shadow: 2px 2px 5px rgb(99, 99, 99);
+        z-index: 1;
     }
     
     .header{
@@ -24,9 +27,12 @@
     
     }
     .Logo img{
-        height: 28px;
-        width: 100px;
+        width: 150px;
         margin-left: 50px;
+        filter: drop-shadow(2px 2px 5px black);
+    }
+    .Logo img:hover {
+        cursor: pointer;
     }
     
     .Navegation{

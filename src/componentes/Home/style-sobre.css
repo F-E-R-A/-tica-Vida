@@ -25,10 +25,19 @@
         display: none;
     }
     
-    .img_farmacia{
+    #img_farmacia1 {
+        background-image: url("../../../public/assets/Banner1.png");
+        background-position: right;
         width: 500px;
         height: 300px
     }
+    #img_farmacia2 {
+        background-image: url("../../../public/assets/Banner2.png");
+        background-position: bottom;
+        width: 500px;
+        height: 300px
+    }
+
     .img_farmacia img{
         width: 500px;
         height: 300px;
