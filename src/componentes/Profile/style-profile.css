@@ -170,7 +170,17 @@
   margin-top: 20px;
   padding-right: 3px;
 }
-.container-profile #form-profile .container-dados .container-buttons #btn-submit {
+.container-profile #form-profile .container-dados .container-buttons .btn-edit {
+  width: 100px;
+  height: 30px;
+  margin-left: 5px;
+  border-radius: 5px;
+  border: 1px solid rgb(161, 161, 161);
+  outline: none;
+  font-weight: 600;
+  background-color: rgb(212, 212, 212);
+}
+.container-profile #form-profile .container-dados .container-buttons .btn-update {
   width: 100px;
   height: 30px;
   margin-left: 5px;
@@ -197,6 +207,9 @@
   background-color: rgb(243, 189, 107);
   outline: none;
   font-weight: 600;
+}
+.container-profile #form-profile .container-dados .container-buttons .btn-edit:hover, .container-profile #form-profile .container-dados .container-buttons .btn-update:hover, .container-profile #form-profile .container-dados .container-buttons #btn-voltar:hover, .container-profile #form-profile .container-dados .container-buttons #btn-limpar:hover {
+  cursor: pointer;
 }
 .container-profile #form-agendamentos {
   width: 100%;

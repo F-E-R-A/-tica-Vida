@@ -1,9 +1,78 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import $ from 'jquery';
 import "./style-profile.css";
 
 export default function Profile(){
     const navigate = useNavigate();
+
+    const[isUpdate, setIsUpdate] = useState(false);
+
+    const[msgButtonEdit, setMsgButtonEdit] = useState("Editar");
+    const[styleButtonEdit, setStyleButtonEdit] = useState("btn-edit");
+
+    useEffect(() => {
+        let fieldset_dados = document.getElementById("fieldset_dados");
+        let fieldset_endereco = document.getElementById("fieldset_endereco");
+
+        fieldset_dados.setAttribute("disabled", "disabled");
+        fieldset_endereco.setAttribute("disabled", "disabled");
+    }, []);
+
+    function habitilarUpdate(){
+        setMsgButtonEdit("Atualizar");
+        setStyleButtonEdit("btn-update");
+
+        let fieldset_dados = document.getElementById("fieldset_dados");
+        let fieldset_endereco = document.getElementById("fieldset_endereco");
+
+        fieldset_dados.removeAttribute("disabled");
+        fieldset_endereco.removeAttribute("disabled");
+
+        if(isUpdate === true){
+            atualizarDados();
+        }
+
+        setIsUpdate(true);
+    }
+
+    async function atualizarDados(){
+        try {
+            const nome = $("#inp-nome").val();
+            const email = $("#inp-email").val();
+            const telefone = $("#inp-telefone").val();
+            const dt_nascimento = $("#inp-dt-nascimento").val();
+            const cpf = $("#inp-cpf").val();
+            const tipo_logradouro = $("#opt-logradouro").val();
+            const nome_logradouro = $("#nome-logradouro").val();
+            const numero_logradouro = $("#numero-logradouro").val();
+
+            const connection = await fetch("http://localhost:7000/atualizarDados", {
+                origin: "http://localhost:3000",
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    telefone: telefone,
+                    dt_nascimento: dt_nascimento,
+                    cpf: cpf,
+                    tipo_logradouro: tipo_logradouro,
+                    nome_logradouro: nome_logradouro,
+                    numero_logradouro: numero_logradouro
+                })
+            });
+
+            const response = await connection.json();
+            console.log(response);
+
+        } catch {
+            console.log("Erro ao atualizar os dados.");
+        }
+    }
 
     return (
         <div className='container-profile'>
@@ -28,34 +97,54 @@ export default function Profile(){
                     </button>
                 </div>
                 <div className='container-dados'>
-                    <fieldset>
+                    <fieldset id="fieldset_dados">
                         <legend>Dados pessoais</legend>
                         <div className='container-nome'>
                             <label>Nome:</label>
-                            <input type='text' name='nome'/>
+                            <input 
+                                id="inp-nome" 
+                                type='text' 
+                                name='nome'
+                            />
                         </div>
                         <div className='container-email-telefone'>
                             <div className='container-email'>
                                 <label>E-mail:</label>
-                                <input type='email' name='email'/>
+                                <input 
+                                    id="inp-email" 
+                                    type='email' 
+                                    name='email'
+                                />
                             </div> 
                             <div className='container-telefone'>
                                 <label>Telefone</label>
-                                <input type='text' name='telefone'/>
+                                <input 
+                                    id="inp-telefone" 
+                                    type='text' 
+                                    name='telefone'
+                                />
                             </div>                       
                         </div>
                         <div className='container-nascimento-cidade'>
                             <div className='container-nascimento'>
                                 <label>Nascimentos:</label>
-                                <input type="date" name='dt-nascimento'/>
+                                <input 
+                                    id="inp-dt-nascimento" 
+                                    type="date" 
+                                    name='dt-nascimento'
+                                />
                             </div>
                             <div className='container-cidade'>
                                 <label>CPF:</label>
-                                <input type='text' name='cpf'/>
+                                <input 
+                                    id="inp-cpf" 
+                                    type='text' 
+                                    name='cpf'
+                                />
                             </div>
                         </div>
                     </fieldset>
-                    <fieldset>
+                    <fieldset id="fieldset_endereco">
                         <legend>Endereço</legend>
                         <div className='container-rua-numero'>
                             <div className='container-logradouro'>
@@ -90,8 +179,10 @@ export default function Profile(){
                     </fieldset>
                     <div className='container-buttons'>
                         <button 
-                            id="btn-submit">
-                            Atualizar
+                            id="btn-submit"
+                            className={styleButtonEdit}
+                            onClick={() => habitilarUpdate()}>
+                            {msgButtonEdit}
                         </button>
                         <button 
                             id='btn-limpar'
