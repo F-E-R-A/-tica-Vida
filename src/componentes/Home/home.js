@@ -1,13 +1,60 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import "./style-capa.css";
 import "./style-section-produtos.css";
 import "./style-sobre.css";
 import "./style-section-agendamento.css";
 
+import $ from 'jquery';
+
 import Header from '../Header/header';
 import Footer from '../Footer/footer';
 
+import { AuthContext } from '../Context/auth';
+
 export default function Home(){
+    const { valor } = useContext(AuthContext);
+    console.log(valor);
+
+    const validarFormulario = () => {
+        let dt_agendamento = $("#inp-data").val();
+        let horario = $("#select-time").val();
+        let comentario = $("#comentario").val();
+
+        console.log(dt_agendamento);
+        console.log(horario);
+        console.log(comentario);
+
+        if(dt_agendamento == "" || horario == ""){
+            console.log("Preeencha todos os campos.");
+
+        } else{
+            enviarFormulario(dt_agendamento, horario, comentario);
+        }
+    }
+
+    const enviarFormulario = async (dt_agendamento, horario, comentario) => {
+        try {
+            const connection = await fetch("http://192.168.100.230:7000/agendamento", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    dt_agendamento: dt_agendamento,
+                    horario: horario,
+                    comentario: comentario
+                })
+            });
+            
+            const data = await connection.json();
+            console.log("Resposta do servidor:", data);
+
+        } catch {
+            console.log("Erro na requisição do Agendamento.");
+        }
+    }
+
     return (
         <> 
             <Header/>
@@ -191,7 +238,8 @@ export default function Home(){
                             <textarea id="comentario" placeholder='Deixe uma observação aqui...'></textarea>
                             <div className='container-buttons'>
                                 <button 
-                                    id="btn-verificar">
+                                    id="btn-verificar"
+                                    onClick={() => validarFormulario()}>
                                     Verificar disponibilidade
                                 </button>
                                 <button 

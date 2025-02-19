@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Profile from "../Profile/profile";
 import Home from "../Home/home";
+import Login from "../Login/login";
 
 export default function Router(){
     return(
@@ -9,6 +10,7 @@ export default function Router(){
             <Routes>
                 <Route exact path="/" element={<Home/>}/>
                 <Route exact path="/profile" element={<Profile/>}/>
+                <Route exact path="/login" element={<Login/>}/>
             </Routes>
         </BrowserRouter>
     );
