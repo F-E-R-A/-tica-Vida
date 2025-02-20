@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import "./style-capa.css";
 import "./style-section-produtos.css";
 import "./style-sobre.css";
 import "./style-section-agendamento.css";
-
 import $ from 'jquery';
 
 import Header from '../Header/header';
@@ -13,28 +12,64 @@ import { AuthContext } from '../Context/auth';
 
 export default function Home(){
     const { valor } = useContext(AuthContext);
-    console.log(valor);
+    
+    const img_success = "/assets/sucesso.png";
+    const img_error = "/assets/fechar.png";
+    const ico_loading = "/assets/loading2.gif";
 
+    const[isLoading, setIsLoading] = useState(false);
+    const[isMessage, setIsMessage] = useState(false);
+    const[message, setMessage] = useState("");
+    const[styleMessage, setStyleMessage] = useState("");
+    const[icoMessage, setIcoMessage] = useState();
+
+    
     const validarFormulario = () => {
         let dt_agendamento = $("#inp-data").val();
         let horario = $("#select-time").val();
         let comentario = $("#comentario").val();
 
-        console.log(dt_agendamento);
-        console.log(horario);
-        console.log(comentario);
+        //console.log(dt_agendamento);
+        //console.log(horario);
+        //console.log(comentario);
 
         if(dt_agendamento == "" || horario == ""){
             console.log("Preeencha todos os campos.");
 
         } else{
-            enviarFormulario(dt_agendamento, horario, comentario);
+            verificarDisponibilidade(dt_agendamento, horario, comentario);
         }
     }
 
-    const enviarFormulario = async (dt_agendamento, horario, comentario) => {
+    const verificarDisponibilidade = async (dt_agendamento, horario, comentario) => {
+        try {
+            const connection = await fetch("http://192.168.100.230:7000/verificarDisponibilidade", {
+                origin: "http://192.168.100.230:3000",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    dt_agendamento: dt_agendamento,
+                    horario: horario,
+                    comentario: comentario
+                })
+            });
+
+            const response = await connection.json();
+
+            console.log(response.available);
+            
+
+        } catch {
+            console.log("Erro ao verificar a disponibilidade.");
+        }
+    }
+
+    const agendar = async (dt_agendamento, horario, comentario) => {
         try {
             const connection = await fetch("http://192.168.100.230:7000/agendamento", {
+                origin: "http://192.168.100.230:3000",
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -194,7 +229,10 @@ export default function Home(){
                     <div className='container-subtitle-agendamento'>
                         <h3>Venha conversar com um especialista presencialmente.</h3>
                         <p>Agende sua visita abaixo:</p>
-                    </div>            
+                    </div>     
+                    <div className='container-message'>
+                        Teste
+                    </div>       
                     <div className='container-form-agendamento'>
                         <div className='container-dia-horario'>
                             <div className='container-data'>
