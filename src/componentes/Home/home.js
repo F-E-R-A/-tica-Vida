@@ -8,6 +8,8 @@ import $ from 'jquery';
 import Header from '../Header/header';
 import Footer from '../Footer/footer';
 
+import { frontend_port, frontend_server, backend_port, backend_server } from '../../Services/Server/server.config';
+
 import { AuthContext } from '../Context/auth';
 
 export default function Home(){
@@ -29,10 +31,6 @@ export default function Home(){
         let horario = $("#select-time").val();
         let comentario = $("#comentario").val();
 
-        //console.log(dt_agendamento);
-        //console.log(horario);
-        //console.log(comentario);
-
         if(dt_agendamento == "" || horario == ""){
             console.log("Preeencha todos os campos.");
 
@@ -43,8 +41,8 @@ export default function Home(){
 
     const verificarDisponibilidade = async (dt_agendamento, horario, comentario) => {
         try {
-            const connection = await fetch("http://192.168.100.230:7000/verificarDisponibilidade", {
-                origin: "http://192.168.100.230:3000",
+            const connection = await fetch(backend_server + backend_port + "/verificarDisponibilidade", {
+                origin: frontend_server + frontend_port,
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -58,7 +56,23 @@ export default function Home(){
 
             const response = await connection.json();
 
-            console.log(response.available);
+            if(response.available === true){
+                console.log("true");
+                setStyleMessage("container-message-success");
+                setMessage("Horário disponível. Clique em 'Agendar'");
+                setIcoMessage(img_success);
+                setIsMessage(true);
+
+            } else {
+                setStyleMessage("container-message-error");
+                setMessage("Dia ou Horário indisponível.");
+                setIcoMessage(img_error);
+                setIsMessage(true);
+            }
+
+            if(typeof response.available == 'boolean'){
+                return response.available;
+            }
             
 
         } catch {
@@ -66,24 +80,30 @@ export default function Home(){
         }
     }
 
-    const agendar = async (dt_agendamento, horario, comentario) => {
+    const agendar = async () => {
         try {
-            const connection = await fetch("http://192.168.100.230:7000/agendamento", {
-                origin: "http://192.168.100.230:3000",
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    dt_agendamento: dt_agendamento,
-                    horario: horario,
-                    comentario: comentario
-                })
-            });
-            
-            const data = await connection.json();
-            console.log("Resposta do servidor:", data);
+            let dt_agendamento = $("#inp-data").val();
+            let horario = $("#select-time").val();
+            let comentario = $("#comentario").val();
+
+            if(verificarDisponibilidade){
+                const connection = await fetch(backend_server + backend_port + "/agendamento", {
+                    origin: frontend_server + frontend_port,
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        dt_agendamento: dt_agendamento,
+                        horario: horario,
+                        comentario: comentario
+                    })
+                });
+                
+                const data = await connection.json();
+                console.log("Resposta do servidor:", data);
+            } 
 
         } catch {
             console.log("Erro na requisição do Agendamento.");
@@ -229,22 +249,34 @@ export default function Home(){
                     <div className='container-subtitle-agendamento'>
                         <h3>Venha conversar com um especialista presencialmente.</h3>
                         <p>Agende sua visita abaixo:</p>
-                    </div>     
-                    <div className='container-message'>
-                        Teste
-                    </div>       
+                    </div>    
+                    {(isMessage) ? 
+                        <div className={styleMessage}>
+                            <img 
+                                src={icoMessage} 
+                                alt=""
+                            />
+                            <span>{message}</span>
+                        </div> :
+                        <></>  
+                    }    
                     <div className='container-form-agendamento'>
                         <div className='container-dia-horario'>
                             <div className='container-data'>
                                 <label>Data:</label>
-                                <input id="inp-data" type='date'/>
+                                <input 
+                                    id="inp-data" 
+                                    type='date'
+                                    required
+                                />
                             </div>
                             <div className='container-horario'>
                                 <label>Horário:</label>
                                 <select id="select-time">
                                     <option 
                                         value="08:00"
-                                        selected>
+                                        selected
+                                        required>
                                         08:00h
                                     </option>
                                     <option value="09:00">09:00h</option>
@@ -281,7 +313,8 @@ export default function Home(){
                                     Verificar disponibilidade
                                 </button>
                                 <button 
-                                    id="btn-agendar">
+                                    id="btn-agendar"
+                                    onClick={() => agendar()}>
                                     Agendar
                                 </button>
                             </div>

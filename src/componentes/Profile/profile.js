@@ -47,7 +47,7 @@ export default function Profile(){
             const nome_logradouro = $("#nome-logradouro").val();
             const numero_logradouro = $("#numero-logradouro").val();
 
-            const connection = await fetch("http://localhost:7000/atualizarDados", {
+            const connection = await fetch("http://:7000/atualizarDados", {
                 origin: "http://localhost:3000",
                 method: "POST",
                 credentials: "include",

@@ -25,6 +25,36 @@
     margin-bottom: 20px;
     border-radius: 10px;
 }
+.container-agendamento .container-message-success {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #4ec27a;
+    color: rgb(3, 70, 31);
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+.container-agendamento .container-message-success img {
+    width: 25px;
+    margin-right: 5px;
+}
+.container-agendamento .container-message-error {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #e08484;
+    color: rgb(117, 12, 12);
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+.container-agendamento .container-message-error img {
+    width: 25px;
+    margin-right: 10px;
+}
 .container-agendamento .container-form-agendamento .container-dia-horario {
     display: flex;
     flex-direction: row;
