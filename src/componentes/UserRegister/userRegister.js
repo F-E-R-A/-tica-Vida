@@ -4,6 +4,7 @@ import { isCpf } from 'iscpf';
 import { isValidEmail } from 'is-valid-email';
 import $ from 'jquery';
 import "./style-user-register.css"
+import { backend_port, backend_server, frontend_port, frontend_server } from '../../Services/Server/server.config';
 
 export default function UserRegister(){
     const navigate = useNavigate();
@@ -13,8 +14,8 @@ export default function UserRegister(){
     const img_warning = "/assets/atencao.png";
     const ico_loading = "/assets/loading2.gif";
 
-    const[isLoadingDisponibilidade, setIsLoadingDisponibilidade] = useState(false);
-    const[isLoadingAgendamento, setIsLoadingAgendamento] = useState(false);
+    const[textBtnRegister, setTextBtnRegister] = useState("Registrar");
+    const[isLoadingRegister, setIsLoadingRegister] = useState(false);
     const[openMessage, setOpenMessage] = useState(false);
     const[message, setMessage] = useState("");
     const[styleMessage, setStyleMessage] = useState("");
@@ -45,6 +46,9 @@ export default function UserRegister(){
 
     const validarRegistro = () => {
         try {   
+            setTextBtnRegister("");
+            setIsLoadingRegister(true);
+
             let nome = $("#inp-nome").val();
             let email = $("#inp-email").val();
             let telefone = $("#inp-telefone").val();
@@ -55,38 +59,88 @@ export default function UserRegister(){
             let numero_logradouro = $("#numero-logradouro").val();
 
             if(nome === null || nome == "" || nome.trim() === ""){
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
                 setStyleMessage("container-message-warning");
                 setMessage("Preencha o campo Nome.");
                 setIcoMessage(img_warning);
                 setOpenMessage(true);
 
             } else if(!isValidEmail(email)){
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
                 setStyleMessage("container-message-error");
                 setMessage("Digite um E-mail válido.");
                 setIcoMessage(img_error);
                 setOpenMessage(true);
 
             } else if(telefone.trim().length !== 11){
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
                 setStyleMessage("container-message-warning");
                 setMessage("Digite um telefone válido");
                 setIcoMessage(img_warning);
                 setOpenMessage(true);
 
             } else if(!isCpf(cpf)){
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
                 setStyleMessage("container-message-warning");
                 setMessage("Digite um CPF válido.");
                 setIcoMessage(img_warning);
                 setOpenMessage(true);
 
             } else {
-                console.log("Pass");
+                registrarUsuario(nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro);
             }
-
-
-
 
         } catch {
             console.log("Erro no formulário.");
+        }
+    }
+
+    const registrarUsuario = async (nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro) => {
+        try {
+            const connection = await fetch(backend_server + backend_port + "/newUser", {
+                origin: frontend_server + frontend_port,
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    telefone: telefone,
+                    dt_nascimento: dt_nascimento,
+                    cpf: cpf,
+                    tipo_logradouro: tipo_logradouro,
+                    nome_logradouro: nome_logradouro,
+                    numero_logradouro: numero_logradouro
+                })
+            });
+
+            const response = await connection.json();
+            if(response.status === 200){
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
+                setStyleMessage("container-message-success");
+                setMessage("Usuário registrado com sucesso.");
+                setIcoMessage(img_success);
+                setOpenMessage(true);
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
+            }
+        
+        } catch {
+            console.log("Erro FrontEnd ao registrar usuário.");
+            setTextBtnRegister("Registrar");
+            setIsLoadingRegister(false);
+            setStyleMessage("container-message-error");
+            setMessage("Ocorreu um erro. Tente novamente.");
+            setIcoMessage(img_error);
+            setOpenMessage(true);
         }
     }
 
@@ -215,7 +269,15 @@ export default function UserRegister(){
                             id="btn-submit"
                             className={"btn-register"}
                             onClick={() => validarRegistro()}>
-                            {"Registrar"}
+                            {(isLoadingRegister) ? 
+                                <img 
+                                    id="ico-loading" 
+                                    src={ico_loading} 
+                                    alt=""
+                                /> :
+                                <></>
+                            }    
+                            {textBtnRegister}
                         </button>
                         <button 
                             id='btn-limpar'
@@ -228,7 +290,7 @@ export default function UserRegister(){
                         </button>
                         <button 
                             id='btn-voltar'
-                            onClick={() => navigate("/")}>
+                            onClick={() => navigate("/login")}>
                             Voltar
                         </button>
                     </div>
