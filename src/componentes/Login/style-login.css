@@ -125,5 +125,16 @@
 .container-login .container-form #btn-voltar:hover {
   cursor: pointer;
 }
+.container-login .container-link-register {
+  width: 100%;
+  text-align: center;
+}
+.container-login .container-link-register span {
+  color: #fff;
+}
+.container-login .container-link-register #link-register {
+  color: rgb(79, 213, 253);
+  text-shadow: 1px 1px 10px rgb(79, 213, 253);
+}
 
 /*# sourceMappingURL=style-login.css.map */

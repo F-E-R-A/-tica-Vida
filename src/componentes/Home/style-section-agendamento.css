@@ -29,7 +29,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #4ec27a;
+    background-color: #80e7a7;
     color: rgb(3, 70, 31);
     padding: 5px 10px;
     margin-bottom: 10px;
@@ -44,7 +44,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #e08484;
+    background-color: #f39a9a;
     color: rgb(117, 12, 12);
     padding: 5px 10px;
     margin-bottom: 10px;
@@ -55,6 +55,22 @@
     width: 25px;
     margin-right: 10px;
 }
+.container-agendamento .container-message-warning {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #f3db9a;
+    color: rgb(117, 107, 12);
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+.container-agendamento .container-message-warning img {
+    width: 25px;
+    margin-right: 10px;
+}
+
 .container-agendamento .container-form-agendamento .container-dia-horario {
     display: flex;
     flex-direction: row;
@@ -128,16 +144,31 @@
     outline: none;
 }
 .container-comentario-and-buttons .container-buttons #btn-verificar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     background-color: rgb(228, 175, 61);
     border: 1px solid rgb(128, 115, 0);
     color: #ffffff;
     font-weight: 700;
 }
+.container-comentario-and-buttons .container-buttons #btn-verificar .ico-loading {
+    width: 20px;
+}
 .container-comentario-and-buttons .container-buttons #btn-agendar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     background-color: rgb(61, 228, 111);
     border: 1px solid rgb(0, 128, 53);
     color: #076e2e;
     font-weight: 700;
+}
+.container-comentario-and-buttons .container-buttons #btn-agendar .ico-loading {
+    width: 20px;
+    margin-right: 10px;
 }
 .container-comentario-and-buttons .container-buttons #btn-verificar:hover {
     cursor: pointer;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import $ from 'jquery';
 import "./style-login.css";
 
@@ -111,6 +111,14 @@ export default function Login(){
                         Acessar
                     </button>
                 </form>
+                <div className='container-link-register'>
+                    <span>Não possui cadastro?</span><br/>
+                    <Link 
+                        id="link-register"
+                        to="/register">
+                        Cadastrar agora
+                    </Link>
+                </div>
             </div>
         </div>
     );

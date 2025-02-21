@@ -139,4 +139,18 @@
             cursor: pointer;
         }
     }
+
+    & .container-link-register {
+        width: 100%;
+        text-align: center;
+
+        & span {
+            color: #fff;
+        }
+
+        & #link-register {
+            color: rgb(79, 213, 253);
+            text-shadow: 1px 1px 10px rgb(79, 213, 253);;
+        }
+    }
 }

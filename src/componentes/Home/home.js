@@ -17,16 +17,24 @@ export default function Home(){
     
     const img_success = "/assets/sucesso.png";
     const img_error = "/assets/fechar.png";
+    const img_warning = "/assets/atencao.png";
     const ico_loading = "/assets/loading2.gif";
 
-    const[isLoading, setIsLoading] = useState(false);
-    const[isMessage, setIsMessage] = useState(false);
+    const[isLoadingDisponibilidade, setIsLoadingDisponibilidade] = useState(false);
+    const[isLoadingAgendamento, setIsLoadingAgendamento] = useState(false);
+    const[openMessage, setOpenMessage] = useState(false);
     const[message, setMessage] = useState("");
     const[styleMessage, setStyleMessage] = useState("");
     const[icoMessage, setIcoMessage] = useState();
 
+    const[messageBtnVerificar, setMessageBtnVerificar] = useState("Verificar disponibilidade");
+    const[messageBtnAgendar, setMessageBtnAgendar] = useState("Agendar");
+
     
-    const validarFormulario = () => {
+    const validarFormulario = async () => {
+        setMessageBtnVerificar("");
+        setIsLoadingDisponibilidade(true);
+
         let dt_agendamento = $("#inp-data").val();
         let horario = $("#select-time").val();
         let comentario = $("#comentario").val();
@@ -34,12 +42,30 @@ export default function Home(){
         if(dt_agendamento == "" || horario == ""){
             console.log("Preeencha todos os campos.");
 
+            setIsLoadingDisponibilidade(false);
+            setMessageBtnVerificar("Verificar disponibilidade");
+
+            setStyleMessage("container-message-warning");
+            setMessage("Preencha os campos Data e Horário.");
+            setIcoMessage(img_warning);
+            setOpenMessage(true);
+
+            return 'empty';
+
         } else{
-            verificarDisponibilidade(dt_agendamento, horario, comentario);
+            setOpenMessage(false);
+
+            if(await verificarDisponibilidade(dt_agendamento, horario, comentario)){
+                return true;
+
+            } else {
+                return false;
+            }       
         }
     }
 
     const verificarDisponibilidade = async (dt_agendamento, horario, comentario) => {
+        console.log("verificando...");
         try {
             const connection = await fetch(backend_server + backend_port + "/verificarDisponibilidade", {
                 origin: frontend_server + frontend_port,
@@ -55,38 +81,67 @@ export default function Home(){
             });
 
             const response = await connection.json();
+            console.log(response);
 
             if(response.available === true){
-                console.log("true");
+                setIsLoadingDisponibilidade(false);
+                setMessageBtnVerificar("Verificar disponibilidade");
+
                 setStyleMessage("container-message-success");
                 setMessage("Horário disponível. Clique em 'Agendar'");
                 setIcoMessage(img_success);
-                setIsMessage(true);
+                setOpenMessage(true);
 
-            } else {
+                return true;
+
+            } else if(response.available === false){
+                setIsLoadingDisponibilidade(false);
+                setMessageBtnVerificar("Verificar disponibilidade");
+
                 setStyleMessage("container-message-error");
                 setMessage("Dia ou Horário indisponível.");
                 setIcoMessage(img_error);
-                setIsMessage(true);
+                setOpenMessage(true);
+
+            } else {
+                setIsLoadingDisponibilidade(false);
+                setMessageBtnVerificar("Verificar disponibilidade");
+
+                setStyleMessage("container-message-error");
+                setMessage("Ocorreu um erro. Tente novamente.");
+                setIcoMessage(img_error);
+                setOpenMessage(true);
             }
 
             if(typeof response.available == 'boolean'){
                 return response.available;
             }
             
-
         } catch {
             console.log("Erro ao verificar a disponibilidade.");
+            setIsLoadingDisponibilidade(false);
+            setMessageBtnVerificar("Verificar disponibilidade");
+
+            setStyleMessage("container-message-error");
+            setMessage("Ocorreu um erro. Tente novamente.");
+            setIcoMessage(img_error);
+            setOpenMessage(true);
         }
     }
 
     const agendar = async () => {
         try {
+            setMessageBtnAgendar("Agendando...");
+            setIsLoadingAgendamento(true);
+
             let dt_agendamento = $("#inp-data").val();
             let horario = $("#select-time").val();
             let comentario = $("#comentario").val();
 
-            if(verificarDisponibilidade){
+            const verificarDisponibilidade = await validarFormulario();
+            //console.log(verificarDisponibilidade);
+
+            if(verificarDisponibilidade === true){
                 const connection = await fetch(backend_server + backend_port + "/agendamento", {
                     origin: frontend_server + frontend_port,
                     method: "POST",
@@ -101,12 +156,56 @@ export default function Home(){
                     })
                 });
                 
-                const data = await connection.json();
-                console.log("Resposta do servidor:", data);
-            } 
+                const response = await connection.json();
+
+                if(response.status === true){
+                    setMessageBtnAgendar("Agendar");
+                    setIsLoadingAgendamento(false);
+
+                    setStyleMessage("container-message-success");
+                    setMessage("Agendamento registrado com sucesso.");
+                    setIcoMessage(img_success);
+                    setOpenMessage(true);
+
+                } else {
+                    setMessageBtnAgendar("Agendar");
+                    setIsLoadingAgendamento(false);
+
+                    setStyleMessage("container-message-error");
+                    setMessage("Ocorreu um erro ao registrar. Tente novamente.");
+                    setIcoMessage(img_error);
+                    setOpenMessage(true);
+                }       
+
+            } else if(verificarDisponibilidade === 'empty'){
+                setMessageBtnAgendar("Agendar");
+                setIsLoadingAgendamento(false);
+
+                setStyleMessage("container-message-warning");
+                setMessage("Preencha os campos Data e Horário.");
+                setIcoMessage(img_warning);
+                setOpenMessage(true);
+
+            } else {
+                setMessageBtnAgendar("Agendar");
+                setIsLoadingAgendamento(false);
+
+                setStyleMessage("container-message-warning");
+                setMessage("Tente outra Data ou Horário.");
+                setIcoMessage(img_warning);
+                setOpenMessage(true);
+            }
 
         } catch {
             console.log("Erro na requisição do Agendamento.");
+
+            setMessageBtnAgendar("Agendar");
+            setIsLoadingAgendamento(false);
+            
+            setStyleMessage("container-message-error");
+            setMessage("Ocorreu um erro ao registrar. Tente novamente.");
+            setIcoMessage(img_error);
+            setOpenMessage(true);
         }
     }
 
@@ -250,7 +349,7 @@ export default function Home(){
                         <h3>Venha conversar com um especialista presencialmente.</h3>
                         <p>Agende sua visita abaixo:</p>
                     </div>    
-                    {(isMessage) ? 
+                    {(openMessage) ? 
                         <div className={styleMessage}>
                             <img 
                                 src={icoMessage} 
@@ -310,12 +409,28 @@ export default function Home(){
                                 <button 
                                     id="btn-verificar"
                                     onClick={() => validarFormulario()}>
-                                    Verificar disponibilidade
+                                    {(isLoadingDisponibilidade) ? 
+                                       <img 
+                                            className='ico-loading'
+                                            src={ico_loading}
+                                            alt=""
+                                        /> :
+                                        <></>
+                                    }    
+                                    {messageBtnVerificar}
                                 </button>
                                 <button 
                                     id="btn-agendar"
                                     onClick={() => agendar()}>
-                                    Agendar
+                                    {(isLoadingAgendamento) ? 
+                                        <img 
+                                            className='ico-loading'
+                                            src={ico_loading}
+                                            alt=""
+                                        /> :
+                                        <></>
+                                    }    
+                                    {messageBtnAgendar}
                                 </button>
                             </div>
                         </div>
