@@ -1,17 +1,15 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import isValidEmail from 'is-valid-email';
 import $ from 'jquery';
 import "./style-login.css";
-
-import { backend_port, backend_server, frontend_port, frontend_server } from '../../Services/Server/server.config';
 
 import { AuthContext } from '../Context/auth';
 
 export default function Login(){
     const navigate = useNavigate();
 
-    const { isAuth } = useContext(AuthContext);
+    const { isAuth, verifyLogin } = useContext(AuthContext);
 
     const img_success = "/assets/sucesso.png";
     const img_error = "/assets/fechar.png";
@@ -92,75 +90,79 @@ export default function Login(){
         }
     }
 
-    return (
-        <div className='container-login'>
-            <div className='container-message'>
-                <p>Para acessar os registros de agendamentos é necessário o Login.</p>
-            </div>
-            <div className='container-form'>
-                <form
-                    id="form-login"
-                    onSubmit={(e) => e.preventDefault()}>
-                    <h1>Login</h1>
-                    {(isLoading) ? 
-                        <div className='container-loading'>
-                            <img 
-                                id="ico-loading" 
-                                src={ico_loading} 
-                                alt=''
+    if(!verifyLogin()){
+        return (
+            <div className='container-login'>
+                <div className='container-message'>
+                    <p>Para acessar os registros de agendamentos é necessário o Login.</p>
+                </div>
+                <div className='container-form'>
+                    <form
+                        id="form-login"
+                        onSubmit={(e) => e.preventDefault()}>
+                        <h1>Login</h1>
+                        {(isLoading) ? 
+                            <div className='container-loading'>
+                                <img 
+                                    id="ico-loading" 
+                                    src={ico_loading} 
+                                    alt=''
+                                />    
+                            </div> : 
+                            <></>
+                        }
+                        {(isMessage) ? 
+                            <div className={styleMessage}>
+                                <img 
+                                    id="img"
+                                    src={icoMessage} 
+                                    alt=""
+                                />
+                                <p>{message}</p>
+                            </div> :
+                            <></>
+                        }             
+                        <div className='container-user'>
+                            <label>Email:</label>
+                            <input 
+                                id="inp-user" 
+                                type="text"
+                                required
                             />    
-                        </div> : 
-                        <></>
-                    }
-                    {(isMessage) ? 
-                        <div className={styleMessage}>
-                            <img 
-                                id="img"
-                                src={icoMessage} 
-                                alt=""
+                        </div>    
+                        <div className='container-password'>
+                            <label>Senha:</label>
+                            <input 
+                                id="inp-password" 
+                                type="password"
+                                required
                             />
-                            <p>{message}</p>
-                        </div> :
-                        <></>
-                    }             
-                    <div className='container-user'>
-                        <label>Email:</label>
-                        <input 
-                            id="inp-user" 
-                            type="text"
-                            required
-                        />    
-                    </div>    
-                    <div className='container-password'>
-                        <label>Senha:</label>
-                        <input 
-                            id="inp-password" 
-                            type="password"
-                            required
-                        />
-                    </div>  
-                    <div className='line1'></div>  
-                    <div className='line2'></div>
-                    <button 
-                        id="btn-voltar"
-                        onClick={() => navigate("/")}>
-                        Voltar
-                    </button>
-                    <button 
-                        id="btn-enviar"
-                        onClick={() => validarLogin()}>
-                        Acessar
-                    </button>
-                </form>
-                <div className='container-link-register'>
-                    <span>Não possui cadastro?</span><br/>
-                    <Link 
-                        id="link-register"
-                        to="/register">
-                        Cadastrar agora
-                    </Link>
+                        </div>  
+                        <div className='line1'></div>  
+                        <div className='line2'></div>
+                        <button 
+                            id="btn-voltar"
+                            onClick={() => navigate("/")}>
+                            Voltar
+                        </button>
+                        <button 
+                            id="btn-enviar"
+                            onClick={() => validarLogin()}>
+                            Acessar
+                        </button>
+                    </form>
+                    <div className='container-link-register'>
+                        <span>Não possui cadastro?</span><br/>
+                        <Link 
+                            id="link-register"
+                            to="/register">
+                            Cadastrar agora
+                        </Link>
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    } else {
+        return <Navigate to="/"/>
+    }
 }

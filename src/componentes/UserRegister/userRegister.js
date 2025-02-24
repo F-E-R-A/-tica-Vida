@@ -168,7 +168,7 @@ export default function UserRegister(){
                 setIcoMessage(img_error);
                 setOpenMessage(true);
 
-            } else{
+            } else {
                 setTextBtnRegister("Registrar");
                 setIsLoadingRegister(false);
                 setStyleMessage("container-message-error");
@@ -177,8 +177,8 @@ export default function UserRegister(){
                 setOpenMessage(true);
             }
         
-        } catch {
-            console.log("Erro FrontEnd ao registrar usuário.");
+        } catch(error) {
+            console.log("Erro FrontEnd ao registrar usuário. " + error.message);
             setTextBtnRegister("Registrar");
             setIsLoadingRegister(false);
             setStyleMessage("container-message-error");

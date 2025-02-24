@@ -83,7 +83,7 @@ export default function Home(){
             const response = await connection.json();
             console.log(response);
 
-            if(response.available === true){
+            if(response.status === 200){
                 setIsLoadingDisponibilidade(false);
                 setMessageBtnVerificar("Verificar disponibilidade");
 
@@ -94,7 +94,7 @@ export default function Home(){
 
                 return true;
 
-            } else if(response.available === false){
+            } else if(response.status === 400){
                 setIsLoadingDisponibilidade(false);
                 setMessageBtnVerificar("Verificar disponibilidade");
 
@@ -102,6 +102,8 @@ export default function Home(){
                 setMessage("Dia ou Horário indisponível.");
                 setIcoMessage(img_error);
                 setOpenMessage(true);
+
+                return false;
 
             } else {
                 setIsLoadingDisponibilidade(false);
@@ -113,9 +115,9 @@ export default function Home(){
                 setOpenMessage(true);
             }
 
-            if(typeof response.available == 'boolean'){
+            /*if(typeof response.avail == 'boolean'){
                 return response.available;
-            }
+            }*/
             
         } catch {
             console.log("Erro ao verificar a disponibilidade.");
@@ -129,11 +131,13 @@ export default function Home(){
         }
     }
 
+    //console.log(JSON.parse(sessionStorage.getItem("@InternalAuth"))); 
     const agendar = async () => {
         try {
             setMessageBtnAgendar("Agendando...");
             setIsLoadingAgendamento(true);
 
+            let id_user = JSON.parse(sessionStorage.getItem("@InternalAuth")).email;
             let dt_agendamento = $("#inp-data").val();
             let horario = $("#select-time").val();
             let comentario = $("#comentario").val();
@@ -150,6 +154,7 @@ export default function Home(){
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
+                        id_user: id_user,
                         dt_agendamento: dt_agendamento,
                         horario: horario,
                         comentario: comentario
@@ -158,7 +163,7 @@ export default function Home(){
                 
                 const response = await connection.json();
 
-                if(response.status === true){
+                if(response.status === 200){
                     setMessageBtnAgendar("Agendar");
                     setIsLoadingAgendamento(false);
 

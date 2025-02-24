@@ -178,6 +178,8 @@ export default function Profile(){
                 setIcoMessage(img_success);
                 setOpenMessage(true);
 
+                sessionStorage.setItem("@InternalAuth", JSON.stringify(response.dataUserUpdated));
+
                 setTimeout(() => {
                     desabilitarUpdate();
                 }, 2000);
