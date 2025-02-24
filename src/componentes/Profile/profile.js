@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { isValidEmail } from 'is-valid-email';
+import { isCpf } from 'iscpf';
 import $ from 'jquery';
 import "./style-profile.css";
+import { backend_port, backend_server, frontend_port, frontend_server } from '../../Services/Server/server.config';
 
 export default function Profile(){
     const navigate = useNavigate();
@@ -11,13 +14,54 @@ export default function Profile(){
     const[msgButtonEdit, setMsgButtonEdit] = useState("Editar");
     const[styleButtonEdit, setStyleButtonEdit] = useState("btn-edit");
 
+    const img_success = "/assets/sucesso.png";
+    const img_error = "/assets/fechar.png";
+    const img_warning = "/assets/atencao.png";
+    const ico_loading = "/assets/loading2.gif";
+
+    const[isLoading, setIsLoading] = useState(false);
+    const[openMessage, setOpenMessage] = useState(false);
+    const[message, setMessage] = useState("");
+    const[styleMessage, setStyleMessage] = useState("");
+    const[icoMessage, setIcoMessage] = useState();
+
     useEffect(() => {
         let fieldset_dados = document.getElementById("fieldset_dados");
         let fieldset_endereco = document.getElementById("fieldset_endereco");
 
         fieldset_dados.setAttribute("disabled", "disabled");
         fieldset_endereco.setAttribute("disabled", "disabled");
+
+        loadingUserData();
     }, []);
+
+    const loadingUserData = () => {
+        try {
+            const userData = JSON.parse(sessionStorage.getItem("@InternalAuth"));
+
+            $("#inp-nome").val(userData.nome);
+            $("#inp-email").val(userData.email);
+            $("#inp-telefone").val(formatarTelefone(userData.telefone));
+            $("#inp-dt-nascimento").val(userData.dt_nascimento.split("T")[0]);
+            $("#inp-cpf").val(userData.cpf);
+            $("#opt-logradouro").val(userData.tipo_logradouro);
+            $("#nome-logradouro").val(userData.nome_logradouro);
+            $("#numero-logradouro").val(userData.numero_logradouro);
+
+        } catch {
+            console.log("Erro ao carregar os dados de usuário.");
+        }
+    }
+ 
+    const formatarTelefone = (phone) => {
+        if(phone.length === 11){
+            var phoneF = phone.trim();
+            return `(${phoneF.slice(0,2)}) ${phoneF.slice(2,7)}-${phoneF.slice(7,11)}`;
+
+        } else{
+            return false;
+        }   
+    }
 
     function habitilarUpdate(){
         setMsgButtonEdit("Atualizar");
@@ -30,25 +74,83 @@ export default function Profile(){
         fieldset_endereco.removeAttribute("disabled");
 
         if(isUpdate === true){
-            atualizarDados();
+            validarRegistro();
         }
 
         setIsUpdate(true);
     }
+    function desabilitarUpdate(){
+        setMsgButtonEdit("Editar");
+        setStyleButtonEdit("btn-edit");
 
-    async function atualizarDados(){
+        let fieldset_dados = document.getElementById("fieldset_dados");
+        let fieldset_endereco = document.getElementById("fieldset_endereco");
+
+        fieldset_dados.setAttribute("disabled", "disabled");
+        fieldset_endereco.setAttribute("disabled", "disabled");
+
+        setIsUpdate(false);
+    }
+
+    const validarRegistro = async () => {
+        try {   
+            setMsgButtonEdit("");
+            setIsLoading(true);
+
+            let nome = $("#inp-nome").val();
+            let email = $("#inp-email").val();
+            let telefone = $("#inp-telefone").val().replace("(", "").replace(")", "").replace("-", "").replace(" ", "");
+            let dt_nascimento = $("#inp-dt-nascimento").val();
+            let cpf = $("#inp-cpf").val();
+            let tipo_logradouro = $("#opt-logradouro").val();
+            let nome_logradouro = $("#nome-logradouro").val();
+            let numero_logradouro = $("#numero-logradouro").val();
+
+            if(nome === null || nome == "" || nome.trim() === ""){
+                setMsgButtonEdit("Atualizar");
+                setIsLoading(false);
+                setStyleMessage("container-message-warning");
+                setMessage("Preencha o campo Nome.");
+                setIcoMessage(img_warning);
+                setOpenMessage(true);
+
+            } else if(!isValidEmail(email)){
+                setMsgButtonEdit("Atualizar");
+                setIsLoading(false);
+                setStyleMessage("container-message-error");
+                setMessage("Digite um E-mail válido.");
+                setIcoMessage(img_error);
+                setOpenMessage(true);
+
+            } else if(telefone.trim().length !== 11){
+                setMsgButtonEdit("Atualizar");
+                setIsLoading(false);
+                setStyleMessage("container-message-warning");
+                setMessage("Digite um telefone válido");
+                setIcoMessage(img_warning);
+                setOpenMessage(true);
+
+            } else if(!isCpf(cpf)){
+                setMsgButtonEdit("Atualizar");
+                setIsLoading(false);
+                setStyleMessage("container-message-warning");
+                setMessage("Digite um CPF válido.");
+                setIcoMessage(img_warning);
+                setOpenMessage(true);
+
+            } else {
+                await atualizarDados(nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro);
+            }
+
+        } catch {
+            console.log("Erro no formulário.");
+        }
+    }
+
+    async function atualizarDados(nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro){
         try {
-            const nome = $("#inp-nome").val();
-            const email = $("#inp-email").val();
-            const telefone = $("#inp-telefone").val();
-            const dt_nascimento = $("#inp-dt-nascimento").val();
-            const cpf = $("#inp-cpf").val();
-            const tipo_logradouro = $("#opt-logradouro").val();
-            const nome_logradouro = $("#nome-logradouro").val();
-            const numero_logradouro = $("#numero-logradouro").val();
-
-            const connection = await fetch("http://:7000/atualizarDados", {
-                origin: "http://localhost:3000",
+            const connection = await fetch(backend_server + backend_port + "/atualizarDados", {
+                origin: frontend_server + frontend_port,
                 method: "POST",
                 credentials: "include",
                 headers: {
@@ -62,15 +164,59 @@ export default function Profile(){
                     cpf: cpf,
                     tipo_logradouro: tipo_logradouro,
                     nome_logradouro: nome_logradouro,
-                    numero_logradouro: numero_logradouro
+                    numero_logradouro: numero_logradouro,
+                    token: sessionStorage.getItem("@Token").replaceAll('"', "")
                 })
             });
 
             const response = await connection.json();
-            console.log(response);
+            if(typeof response === 'object' && response.status === 200){
+                setMsgButtonEdit("Atualizar");
+                setIsLoading(false);
+                setStyleMessage("container-message-success");
+                setMessage("Dados atualizados com sucesso.");
+                setIcoMessage(img_success);
+                setOpenMessage(true);
+
+                setTimeout(() => {
+                    desabilitarUpdate();
+                }, 2000);
+
+            } else if(typeof response === 'object' && response.status === 500){
+                setMsgButtonEdit("Atualizar");
+                setIsLoading(false);
+                setStyleMessage("container-message-error");
+                setMessage("Ocorreu um erro ao tentar atualizar os dados.");
+                setIcoMessage(img_error);
+                setOpenMessage(true);
+
+            } else {
+                setMsgButtonEdit("Atualizar");
+                setIsLoading(false);
+                setStyleMessage("container-message-error");
+                setMessage("Erro no servidor... Tente mais tarde.");
+                setIcoMessage(img_error);
+                setOpenMessage(true);
+            }
 
         } catch {
             console.log("Erro ao atualizar os dados.");
+            setMsgButtonEdit("Atualizar");
+            setIsLoading(false);
+            setStyleMessage("container-message-error");
+            setMessage("Erro interno.");
+            setIcoMessage(img_error);
+            setOpenMessage(true);
+        }
+    }
+
+    const logOut = () => {
+        try {
+            sessionStorage.removeItem("@InternalAuth");
+            sessionStorage.removeItem("@Token");
+
+        } catch {
+            console.log("Erro ao fazer logout.");
         }
     }
 
@@ -92,11 +238,27 @@ export default function Profile(){
                     </button>
                 </div>
                 <div className='container-logout'>
-                    <button id='btn-logout'>
+                    <button 
+                        id='btn-logout'
+                        onClick={() => {
+                            logOut();
+                            navigate("/");
+                        }}>
                         <img id='img-logout' src="/assets/logout.png" alt=""/>    
                     </button>
                 </div>
                 <div className='container-dados'>
+                    {(openMessage) ?
+                        <div className={styleMessage}>
+                            <img
+                                className="ico-message" 
+                                src={icoMessage} 
+                                alt=""
+                            />
+                            <p>{message}</p>
+                        </div> :
+                        <></>
+                    }     
                     <fieldset id="fieldset_dados">
                         <legend>Dados pessoais</legend>
                         <div className='container-nome'>
@@ -114,6 +276,7 @@ export default function Profile(){
                                     id="inp-email" 
                                     type='email' 
                                     name='email'
+                                    disabled
                                 />
                             </div> 
                             <div className='container-telefone'>
@@ -182,6 +345,14 @@ export default function Profile(){
                             id="btn-submit"
                             className={styleButtonEdit}
                             onClick={() => habitilarUpdate()}>
+                            {(isLoading) ?
+                                <img 
+                                    id="ico-loading"
+                                    src={ico_loading} 
+                                    alt=""
+                                /> :
+                                <></>
+                            }
                             {msgButtonEdit}
                         </button>
                         <button 

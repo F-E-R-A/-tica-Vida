@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import isValidEmail from 'is-valid-email';
 import $ from 'jquery';
 import "./style-login.css";
 
+import { backend_port, backend_server, frontend_port, frontend_server } from '../../Services/Server/server.config';
+
+import { AuthContext } from '../Context/auth';
+
 export default function Login(){
     const navigate = useNavigate();
+
+    const { isAuth } = useContext(AuthContext);
 
     const img_success = "/assets/sucesso.png";
     const img_error = "/assets/fechar.png";
@@ -16,45 +23,72 @@ export default function Login(){
     const[styleMessage, setStyleMessage] = useState("");
     const[icoMessage, setIcoMessage] = useState();
 
-    const login = async () => {
-        setIsMessage(false);
-        setIsLoading(true);
+    const validarLogin = async () => {
+        const email = $("#inp-user").val();
+        const password = $("#inp-password").val();
 
+        if(!isValidEmail(email)){
+            setIsLoading(false);
+            setMessage("Preencha com E-mail válido.");
+            setStyleMessage("messages-error");
+            setIcoMessage(img_error);
+            setIsMessage(true);
+
+        } else if(password === "") {
+            setIsLoading(false);
+            setMessage("Preencha o campo Senha.");
+            setStyleMessage("messages-error");
+            setIcoMessage(img_error);
+            setIsMessage(true);
+
+        } else {
+            await login(email, password);
+        }
+    }
+
+    const login = async (email, password) => {
         try {
-            const user = $("#inp-user").val();
-            const password = $("#inp-password").val();
+            setIsMessage(false);
+            setIsLoading(true);
 
-            const connection = await fetch("http://192.168.100.230:7000/login", {
-                origin: "http://192.168.100.230:3000",
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    user: user,
-                    password: password
-                })
-            });
+            const isAuthInternal = await isAuth(email, password);
 
-            const response = await connection.json();
-            if(response.status === 200){               
+            if(isAuthInternal.status === 200){               
                 setIsLoading(false);
                 setMessage("Logado com sucesso.");
                 setStyleMessage("messages-success");
                 setIcoMessage(img_success);
                 setIsMessage(true);
 
-            } else {
+                setTimeout(() => {
+                    navigate("/profile");
+                }, 2000);
+
+            } else if(isAuthInternal.status === 401) {
                 setIsLoading(false);
                 setMessage("Usuário ou Senha incorretos.");
+                setStyleMessage("messages-error");
+                setIcoMessage(img_error);
+                setIsMessage(true);
+
+            } else if(isAuthInternal.status === 404){
+                setIsLoading(false);
+                setMessage("E-mail não cadastrado.");
+                setStyleMessage("messages-error");
+                setIcoMessage(img_error);
+                setIsMessage(true);
+
+            } else {
+                setIsLoading(false);
+                setMessage("Erro interno. Tente novamente.");
                 setStyleMessage("messages-error");
                 setIcoMessage(img_error);
                 setIsMessage(true);
             }
 
         } catch {
-            console.log("Erro ao fazer login.");
+            setIsLoading(false);
+            console.log("Erro ao fazer login 1.");
         }
     }
 
@@ -88,15 +122,22 @@ export default function Login(){
                             <p>{message}</p>
                         </div> :
                         <></>
-                    }
-                    
+                    }             
                     <div className='container-user'>
-                        <label>Usuário:</label>
-                        <input id="inp-user" type="text"/>    
+                        <label>Email:</label>
+                        <input 
+                            id="inp-user" 
+                            type="text"
+                            required
+                        />    
                     </div>    
                     <div className='container-password'>
                         <label>Senha:</label>
-                        <input id="inp-password" type="password"/>
+                        <input 
+                            id="inp-password" 
+                            type="password"
+                            required
+                        />
                     </div>  
                     <div className='line1'></div>  
                     <div className='line2'></div>
@@ -107,7 +148,7 @@ export default function Login(){
                     </button>
                     <button 
                         id="btn-enviar"
-                        onClick={() => login()}>
+                        onClick={() => validarLogin()}>
                         Acessar
                     </button>
                 </form>

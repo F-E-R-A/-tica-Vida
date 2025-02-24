@@ -33,21 +33,35 @@ export default function UserRegister(){
         setCpf(cpfF);
     }
 
-    const formatarTelefone = (phone) => {
-        if(phone.length === 11){
-            var phoneF = phone.trim();
-            return `(${phoneF.slice(0,2)}) ${phoneF.slice(2,7)}-${phoneF.slice(7,11)}`;
+    const[styleInputPasswords, setStyleInputPasswords] = useState("container-password");
+    const[showPassword1, setShowPassword1] = useState('/assets/hidden.png');
+    const[showPassword2, setShowPassword2] = useState('/assets/hidden.png');
+    const showHiddenPassword1 = () => {
+        if(showPassword1 === '/assets/hidden.png'){
+            setShowPassword1('/assets/show.png');
+            document.getElementById("password1").setAttribute('type', 'text');
 
         } else{
-            return false;
-        }   
+            setShowPassword1('/assets/hidden.png');
+            document.getElementById("password1").setAttribute('type', 'password');
+        }
+    }
+    const showHiddenPassword2 = () => {
+        if(showPassword2 === '/assets/hidden.png'){
+            setShowPassword2('/assets/show.png');
+            document.getElementById("password2").setAttribute('type', 'text');
+
+        } else{
+            setShowPassword2('/assets/hidden.png');
+            document.getElementById("password2").setAttribute('type', 'password');
+        }
     }
 
-
-    const validarRegistro = () => {
+    const validarRegistro = async () => {
         try {   
             setTextBtnRegister("");
             setIsLoadingRegister(true);
+            setStyleInputPasswords("");
 
             let nome = $("#inp-nome").val();
             let email = $("#inp-email").val();
@@ -57,6 +71,8 @@ export default function UserRegister(){
             let tipo_logradouro = $("#opt-logradouro").val();
             let nome_logradouro = $("#nome-logradouro").val();
             let numero_logradouro = $("#numero-logradouro").val();
+            let password1 = $("#password1").val();
+            let password2 = $("#password2").val();
 
             if(nome === null || nome == "" || nome.trim() === ""){
                 setTextBtnRegister("Registrar");
@@ -90,8 +106,19 @@ export default function UserRegister(){
                 setIcoMessage(img_warning);
                 setOpenMessage(true);
 
+            } else if(password1 !== password2){
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
+
+                setStyleMessage("container-message-warning");
+                setMessage("Os campos Senhas estão diferentes.");
+                setIcoMessage(img_warning);
+                setOpenMessage(true);
+
+                setStyleInputPasswords("password-different");
+
             } else {
-                registrarUsuario(nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro);
+                await registrarUsuario(nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro, password1);
             }
 
         } catch {
@@ -99,7 +126,7 @@ export default function UserRegister(){
         }
     }
 
-    const registrarUsuario = async (nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro) => {
+    const registrarUsuario = async (nome, email, telefone, dt_nascimento, cpf, tipo_logradouro, nome_logradouro, numero_logradouro, password) => {
         try {
             const connection = await fetch(backend_server + backend_port + "/newUser", {
                 origin: frontend_server + frontend_port,
@@ -115,12 +142,13 @@ export default function UserRegister(){
                     cpf: cpf,
                     tipo_logradouro: tipo_logradouro,
                     nome_logradouro: nome_logradouro,
-                    numero_logradouro: numero_logradouro
+                    numero_logradouro: numero_logradouro,
+                    password: password
                 })
             });
 
             const response = await connection.json();
-            if(response.status === 200){
+            if(response.status === 201){
                 setTextBtnRegister("Registrar");
                 setIsLoadingRegister(false);
                 setStyleMessage("container-message-success");
@@ -131,6 +159,22 @@ export default function UserRegister(){
                 setTimeout(() => {
                     navigate("/login");
                 }, 2000);
+
+            } else if(response.status === 409){
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
+                setStyleMessage("container-message-error");
+                setMessage("Este E-mail já está cadastrado.");
+                setIcoMessage(img_error);
+                setOpenMessage(true);
+
+            } else{
+                setTextBtnRegister("Registrar");
+                setIsLoadingRegister(false);
+                setStyleMessage("container-message-error");
+                setMessage("Ocorreu uma falha. Tente novamente.");
+                setIcoMessage(img_error);
+                setOpenMessage(true);
             }
         
         } catch {
@@ -260,6 +304,37 @@ export default function UserRegister(){
                                     id="numero-logradouro" 
                                     type='number' 
                                     placeholder='Nº'
+                                />
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset id="fieldset_passwords">
+                        <legend>Senha de acesso</legend>
+                        <div className='container-passwords'>
+                            <div className='container-password'>
+                                <input 
+                                    id="password1" 
+                                    className={styleInputPasswords}
+                                    type="password"
+                                    placeholder='Senha'
+                                />
+                                <img 
+                                    src={showPassword1} 
+                                    alt=""
+                                    onClick={() => showHiddenPassword1()}
+                                />
+                            </div>
+                            <div className='container-password'>
+                                <input 
+                                    id="password2" 
+                                    className={styleInputPasswords}
+                                    type="password"
+                                    placeholder='Repetir senha'
+                                />
+                                <img 
+                                    src={showPassword2} 
+                                    alt=""
+                                    onClick={() => showHiddenPassword2()}
                                 />
                             </div>
                         </div>

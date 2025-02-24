@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Routes from './componentes/Routes/Routes';
+import Routes from './Services/Routes/Routes';
 import { Context } from './componentes/Context/auth';
 
 function App(){
